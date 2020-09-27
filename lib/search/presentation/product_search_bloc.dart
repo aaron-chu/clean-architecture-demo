@@ -6,19 +6,27 @@ import 'package:intl/intl.dart';
 import '../domain/model/product.dart';
 
 class ProductSearchBloc extends Bloc<SearchProductEvent, SearchProductState> {
-  ProductSearchBloc(this.searchProductUseCase) : super(const SearchProductState.loading());
+  ProductSearchBloc(this.searchProductUseCase)
+      // Emits Loading as initial state
+      : super(const SearchProductState.loading());
 
+  /// An use case for searching products
   final SearchProductUseCase searchProductUseCase;
 
   @override
   Stream<SearchProductState> mapEventToState(SearchProductEvent event) async* {
+    // Emits Loading when receiving a SearchProductEvent
     yield const SearchProductState.loading();
     try {
+      // Searches products with given query using SearchProductUseCase
       final List<Product> products = await searchProductUseCase(event.query);
+      // Converts Product to ProductViewModel
       final List<ProductViewModel> productViewModels = products.map(_convertToViewModel).toList();
+      // Emits Success with converted ProductViewModels
       yield SearchProductState.success(productViewModels);
-    } on Exception catch (error) {
-      yield SearchProductState.error(error);
+    } on Exception catch (exception) {
+      // Emits Error with exception
+      yield SearchProductState.error(exception);
     }
   }
 
@@ -26,6 +34,7 @@ class ProductSearchBloc extends Bloc<SearchProductEvent, SearchProductState> {
         name: product.name,
         imageUrl: product.imageUrl,
         productUrl: product.productUrl,
+        // Formats product price from integer to String
         price: NumberFormat('#,##0', 'en_US').format(product.price),
       );
 }
@@ -39,7 +48,8 @@ class SearchProductEvent {
 class SearchProductState extends BlocDataLoadingState<List<ProductViewModel>> {
   const SearchProductState.loading() : super(isLoading: true);
 
-  const SearchProductState.success(List<ProductViewModel> productViewModels) : super(data: productViewModels);
+  const SearchProductState.success(List<ProductViewModel> productViewModels)
+      : super(data: productViewModels);
 
   const SearchProductState.error(Object error) : super(error: error);
 }
