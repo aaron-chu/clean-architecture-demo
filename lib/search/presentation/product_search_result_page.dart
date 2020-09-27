@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProductSearchPage extends StatefulWidget {
+class ProductSearchResultPage extends StatefulWidget {
   @override
-  _ProductSearchPageState createState() => _ProductSearchPageState();
+  _ProductSearchResultPageState createState() => _ProductSearchResultPageState();
 }
 
-class _ProductSearchPageState extends State<ProductSearchPage> {
+class _ProductSearchResultPageState extends State<ProductSearchResultPage> {
   @override
   Widget build(BuildContext context) => BlocBuilder<ProductSearchBloc, SearchProductState>(
         builder: (context, state) {
